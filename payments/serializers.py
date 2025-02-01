@@ -4,5 +4,9 @@ from .models import Payment
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
-        fields = ['id', 'user', 'amount', 'status', 'transaction_id', 'created_at']
-        read_only_fields = ['status', 'transaction_id', 'created_at']
+        fields = '__all__'
+
+class ZarinpalPaymentRequestSerializer(serializers.Serializer):
+    reservation_id = serializers.IntegerField()
+    amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+    callback_url = serializers.URLField()
