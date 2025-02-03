@@ -1,16 +1,29 @@
-from django.shortcuts import render
-from rest_framework import generics
-from .models import CustomUser
-from .serializers import UserSerializer
-from rest_framework.permissions import AllowAny
-from django.contrib.auth.views import LoginView
-from django.urls import reverse_lazy
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate
+from .forms import UserRegistrationForm, UserLoginForm
 
-class LoginView(LoginView):
-    template_name = 'users/login.html'
-    success_url = reverse_lazy('home:index')  # Redirect to the home page after login
+def register_view(request):
+    if request.method == "POST":
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)  
+            return redirect("home:index")  
+    else:
+        form = UserRegistrationForm()
+    return render(request, "users/register.html", {"form": form})
 
-class RegisterUserView(generics.CreateAPIView):
-    queryset = CustomUser.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [AllowAny]
+
+def login_view(request):
+    if request.method == "POST":
+        form = UserLoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            user = authenticate(request, username=username, password=password)
+            if user:
+                login(request, user)
+                return redirect("home:index")  
+    else:
+        form = UserLoginForm()
+    return render(request, "users/login.html", {"form": form})

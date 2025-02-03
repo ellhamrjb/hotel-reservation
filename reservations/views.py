@@ -1,22 +1,16 @@
-from django.shortcuts import render
-from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import render, redirect
+from django.views import View
 from .models import Reservation
-from .serializers import ReservationSerializer
-from django.http import HttpResponse
+from .forms import ReservationForm
 
-def reservation_form(request):
-    return render(request, 'reservations/reservation_form.html')
+class ReserveView(View):
+    def get(self, request):
+        form = ReservationForm()
+        return render(request, "reservations/reservation_form.html", {"form": form})
 
-class ReservationListCreateView(generics.ListCreateAPIView):
-    queryset = Reservation.objects.all()
-    serializer_class = ReservationSerializer
-    permission_classes = [IsAuthenticated]
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-class ReservationDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Reservation.objects.all()
-    serializer_class = ReservationSerializer
-    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        form = ReservationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("home")  
+        return render(request, "reservations/reservation_form.html", {"form": form})

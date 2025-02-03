@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Home</a>
+            <a href="{% url 'rooms:room_list' %}">Rooms</a>
+            <a href="{% url 'users:login' %}">Login</a>
+            <a href="{% url 'users:register' %}">Register</a>
+        </nav>
+    </header>
+
+    <section class="payment-form">
+        <h2>Complete Your Payment</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Pay Now</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Hotel Reservation. All rights reserved.</p>
+    </footer>
+</body>
+</html>

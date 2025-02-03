@@ -1,0 +1,47 @@
+{% extends 'home/index.html' %}
+<!---
+{% block content %}
+<div class="container mt-5">
+    <h2>Make a Reservation</h2>
+    <form method="POST">
+        {% csrf_token %}
+        
+        <!-- Check-in and Check-out Dates -->
+        <div class="mb-3">
+            <label for="checkin_date" class="form-label">Check-in Date</label>
+            <input type="date" class="form-control" name="checkin_date" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="checkout_date" class="form-label">Check-out Date</label>
+            <input type="date" class="form-control" name="checkout_date" required>
+        </div>
+
+        
+        <div class="mb-3">
+            <label for="num_people" class="form-label">Number of People</label>
+            <input type="number" class="form-control" name="num_people" required min="1">
+        </div>
+
+        
+        <div class="mb-3">
+            <label for="room_type" class="form-label">Room Type</label>
+            <select class="form-select" name="room_type" required>
+                <option value="single">Single Room</option>
+                <option value="double">Double Room</option>
+                <option value="suite">Suite</option>
+            </select>
+        </div>
+
+        
+        <div class="mb-3">
+            <label class="form-label">Meal Options</label><br>
+            <input type="checkbox" name="meals" value="breakfast"> Breakfast
+            <input type="checkbox" name="meals" value="lunch"> Lunch
+            <input type="checkbox" name="meals" value="dinner"> Dinner
+        </div>
+
+        <button type="submit" class="btn btn-success">Confirm Reservation</button>
+    </form>
+</div>
+{% endblock %} ->
