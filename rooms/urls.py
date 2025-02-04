@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import RoomListView, RoomDetailView
+from . import views
 
 urlpatterns = [
-    path('', RoomListView.as_view(), name='room-list'),
-    path('<int:pk>/', RoomDetailView.as_view(), name='room-detail'),
+    path('', views.room_list, name='room-list'),
+    path('<int:pk>/', views.room_detail, name='room-detail'),
 ]

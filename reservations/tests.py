@@ -1,33 +1,21 @@
 from django.test import TestCase
+from .models import Reservation, Room
 from django.urls import reverse
-from .models import Reservation
-from rooms.models import Room
-from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 class ReservationTests(TestCase):
-
+    
     def setUp(self):
-        self.user = get_user_model().objects.create_user(username='testuser', password='testpassword123')
-        self.room = Room.objects.create(name='Test Room', price_per_night=100)
+        room = Room.objects.create(room_number='101', room_type='single', price=100.0, available=True)
+        self.reservation_data = {
+            'room': room.id,
+            'check_in': timezone.now().date() + timezone.timedelta(days=1),
+            'check_out': timezone.now().date() + timezone.timedelta(days=2),
+            'num_of_people': 2,
+            'meal_option': 'breakfast'
+        }
 
     def test_create_reservation(self):
-        
-        self.client.login(username='test1', password='testpassword123')
-        response = self.client.post(reverse('reservations:reserve', args=[self.room.id]), {
-            'check_in': '2025-02-01',
-            'check_out': '2025-02-05',
-            'number_of_people': 2,
-            'meal_option': 'Breakfast'
-        })
-        self.assertEqual(response.status_code, 302)  #  redirects after successful reservation
-
-    def test_reservation_detail(self):
-        
-        reservation = Reservation.objects.create(
-            user=self.user, room=self.room, check_in='2025-02-01', check_out='2025-02-05',
-            number_of_people=2, meal_option='Breakfast', total_price=400
-        )
-        self.client.login(username='test1', password='testpassword123')
-        response = self.client.get(reverse('reservations:reservation_detail', args=[reservation.id]))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Reservation Details')
+        response = self.client.post(reverse('reservation-list'), self.reservation_data)
+        self.assertEqual(response.status_code, 201)  # Reservation should be created
+        self.assertTrue(Reservation.objects.filter(room_id=self.reservation_data['room']).exists())

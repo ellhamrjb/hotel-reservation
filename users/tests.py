@@ -1,29 +1,25 @@
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth import get_user_model
+from .models import CustomUser
 
-class UserTests(TestCase):
-
-    def test_user_registration(self):
-        
-        data = {
-            'username': 'testuser',
-            'email': 'testuser@example.com',
-            'password1': 'testpassword123',
-            'password2': 'testpassword123',
+class CustomUserTests(TestCase):
+    
+    def setUp(self):
+        self.user_data = {
+            'first_name': 'John',
+            'last_name': 'Doe',
+            'email': 'john@example.com',
+            'username': 'john_doe',
+            'password1': 'password123',
+            'password2': 'password123'
         }
-        response = self.client.post(reverse('users:register'), data)
-        self.assertEqual(response.status_code, 302)  
-        
-        user = get_user_model().objects.get(username='testuser')
-        self.assertEqual(user.email, 'testuser@example.com')
 
-    def test_user_profile(self):
-        
-        user = get_user_model().objects.create_user(
-            username='test1', email='test1@example.com', password='testpassword123'
-        )
-        self.client.login(username='test1', password='testpassword123')
-        response = self.client.get(reverse('users:profile'))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'test1')
+    def test_create_user(self):
+        response = self.client.post(reverse('register'), self.user_data)
+        self.assertEqual(response.status_code, 302)  # Redirect on successful registration
+        self.assertTrue(CustomUser.objects.filter(username='john_doe').exists())
+
+    def test_login_user(self):
+        user = CustomUser.objects.create_user(**self.user_data)
+        response = self.client.post(reverse('login'), {'username': 'john_doe', 'password': 'password123'})
+        self.assertEqual(response.status_code, 200)  # Login page should be displayed

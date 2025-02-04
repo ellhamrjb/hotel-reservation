@@ -1,8 +1,10 @@
 from django.contrib import admin
 from .models import Payment
 
-@admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ('reservation', 'amount', 'method', 'status', 'created_at')
-    list_filter = ('status', 'method')
-    search_fields = ('reservation__user__username', 'transaction_id')
+    list_display = ('reservation', 'payment_id', 'status', 'amount', 'transaction_date')
+    list_filter = ('status', 'transaction_date')
+    search_fields = ('payment_id', 'reservation__user__username')
+    ordering = ('-transaction_date',)
+
+admin.site.register(Payment, PaymentAdmin)
