@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Reservation, MealPlan
 from datetime import timezone
+
 class MealPlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = MealPlan

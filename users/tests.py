@@ -1,25 +1,23 @@
-from django.test import TestCase
-from django.urls import reverse
-from .models import CustomUser
+from django.contrib.auth import get_user_model
+from rest_framework.test import APITestCase
+from rest_framework import status
 
-class CustomUserTests(TestCase):
-    
+User = get_user_model()
+
+class AuthenticationTests(APITestCase):
     def setUp(self):
-        self.user_data = {
-            'first_name': 'John',
-            'last_name': 'Doe',
-            'email': 'john@example.com',
-            'username': 'john_doe',
-            'password1': 'password123',
-            'password2': 'password123'
-        }
+        self.user = User.objects.create_user(username="testuser", password="password123")
 
-    def test_create_user(self):
-        response = self.client.post(reverse('register'), self.user_data)
-        self.assertEqual(response.status_code, 302)  # Redirect on successful registration
-        self.assertTrue(CustomUser.objects.filter(username='john_doe').exists())
+    def test_register_user(self):
+        response = self.client.post("/users/register/", {"username": "newuser", "password": "testpass"})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_login_user(self):
-        user = CustomUser.objects.create_user(**self.user_data)
-        response = self.client.post(reverse('login'), {'username': 'john_doe', 'password': 'password123'})
-        self.assertEqual(response.status_code, 200)  # Login page should be displayed
+        response = self.client.post("/users/login/", {"username": "testuser", "password": "password123"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("token", response.data)
+
+    def test_logout_user(self):
+        self.client.login(username="testuser", password="password123")
+        response = self.client.post("/users/logout/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
