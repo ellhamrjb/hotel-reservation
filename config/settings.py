@@ -1,3 +1,4 @@
+
 from pathlib import Path
 import os
 from decouple import config
@@ -25,7 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
-    'bootstrap4',
+    #'bootstrap4',
     'corsheaders',
     'users',
     'reservations',
@@ -133,6 +134,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "users.CustomUser"
 
-
+#TODO change the database from mysql to postgreSql
 
 
