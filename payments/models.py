@@ -5,6 +5,7 @@ from django.conf import settings
 
 User = get_user_model()
 
+
 class Payment(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
@@ -12,9 +13,11 @@ class Payment(models.Model):
         ('failed', 'Failed'),
     ]
     
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+
+
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE, related_name="payments")
-    amount = models.PositiveIntegerField()  #Toman
+    amount = models.PositiveIntegerField()  # Toman
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     transaction_id = models.CharField(max_length=255, blank=True, null=True)
     reference_id = models.CharField(max_length=255, blank=True, null=True)  # Zarinpal Reference ID
@@ -22,3 +25,5 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.amount} Toman - {self.status}"
+
+#TODO add data to admin page

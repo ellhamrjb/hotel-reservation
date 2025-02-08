@@ -12,6 +12,7 @@ django-cors-headers = "*"
 pillow = "*"
 bootstrap4 = "*"
 requests = "*"
+psycopg = {extras = ["binary"], version = "*"}
 
 [dev-packages]
 
