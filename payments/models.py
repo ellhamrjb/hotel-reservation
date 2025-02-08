@@ -27,3 +27,7 @@ class Payment(models.Model):
         return f"{self.user.username} - {self.amount} Toman - {self.status}"
 
 #TODO add data to admin page
+
+
+
+#TODO heroku
